@@ -1,0 +1,1 @@
+Parallel programming code and samples drawn with some inspiration from Ansorge's an Kumar's books on parallel programming.Organised by chapters. Not by any means complete but an extra learning resource
