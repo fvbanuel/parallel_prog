@@ -7,6 +7,7 @@ set(CMAKE_CUDA_ARCHITECTURES 80)
 
 
 find_package(OpenMP REQUIRED)
+find_package(CUDAToolkit REQUIRED)
 
 add_subdirectory(Ansorge)
 add_subdirectory(Kumar)
