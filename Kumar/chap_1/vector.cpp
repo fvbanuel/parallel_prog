@@ -1,5 +1,8 @@
 #include <omp.h>
 #include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+
 // parallelisation works well for big a.size()
 float dot_product(const std::vector<float>& a, const std::vector<float>& b) {
     float result = 0.0f;
@@ -18,3 +21,38 @@ std::vector<float> hadamard_product(const std::vector<float>& a, const std::vect
     return result;
 
 }
+
+// prefix sum
+std::vector<float> prefix_sum(const std::vector<float>& a) {
+    std::vector<float> result(a.size());
+    result[0] = a[0];
+    #pragma omp parallel for ordered(1)
+    for (size_t i = 1; i < a.size(); ++i)
+    {   
+        #pragma omp ordered depend( sink: i-1 )
+
+        result[i] = result[i - 1] + a[i];
+        #pragma omp ordered depend( source )
+    }
+    return result;
+}
+
+
+void grid_computation(int N, int M, std::vector<std::vector<double>>& grid) {
+    #pragma omp parallel for ordered(2)
+    for (int i = 1; i < N; i++) {
+        for (int j = 1; j < M; j++) {
+            
+            // Wait for the dependencies to be ready
+            #pragma omp ordered depend(sink: i-1, j) depend(sink: i, j-1)
+            
+            grid[i][j] = grid[i-1][j] + grid[i][j-1]; // The work
+            
+            // Signal that this cell is now ready for others to use
+            #pragma omp ordered depend(source)
+        }
+    }
+}
+
+
+
