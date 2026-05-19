@@ -4,7 +4,8 @@
 
 // collective communications of a 4- vector
 // Using raw C arrays
-// would use std::vector in C++
+// would use std::vector in C++ 
+//  and using its raw pointer(.data()) for the MPI buffers
 
 int main( int argc, char* argv[]){
 
