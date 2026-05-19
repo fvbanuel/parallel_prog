@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
 
-    // Each process will send 4 integers to EVERY other process
+    // Each process will send 4 integers to every  other process
     int send_count = 4; 
     
     
