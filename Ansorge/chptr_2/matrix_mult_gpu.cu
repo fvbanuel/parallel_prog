@@ -1,6 +1,7 @@
 #include "cuda_runtime.h"
 #include "thrust/device_vector.h"
 #include <stdlib.h>
+#include <random>
 // A is Ay*Ax, B is Ax*Bx, C is Ay*Bx
 __global__ void gpumult(float * __restrict C,
                         const float * __restrict A,
@@ -23,10 +24,10 @@ __global__ void gpumult(float * __restrict C,
                         }
                         int main( int argc , char *argv[])
                         {
-                            int Arow = (argc > 1) ? atoi(argv[2]) : 1024;
-                            int Acol = (argc > 2) ? atoi(argv[3]) : Arow;
+                            int Arow = (argc > 1) ? atoi(argv[1]) : 1024;
+                            int Acol = (argc > 2) ? atoi(argv[2]) : Arow;
                             int Brow = Acol;
-                            int Bcol = (argc > 3)? atoi(argv[4]):Brow;
+                            int Bcol = (argc > 3)? atoi(argv[3]):Brow;
                             int Crow = Arow;
                             int Ccol = Bcol;
 
@@ -53,7 +54,7 @@ __global__ void gpumult(float * __restrict C,
                             dim3 threads = {tilex, tiley, 1};
 
                             dim3 blocks = {(Bcol + threads.x -1)/threads.x,
-                                            (Arow+threads.y -1)/threads.y, 1}
+                                            (Arow+threads.y -1)/threads.y, 1};
 
                             gpumult<<<blocks, threads>>>(thrust::raw_pointer_cast(d_C.data()),
                                                     thrust::raw_pointer_cast(d_A.data()),
