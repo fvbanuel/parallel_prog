@@ -2,7 +2,7 @@
 #include "thrust/device_vector.h"
 #include <stdlib.h>
 #include <random>
-
+//kernel for tiled matrix multiplication
 template< int TS> __global__ void gputiled(
     float * __restrict C, float * __restrict A,
     float * __restrict B, int Ay,int Ax, int Bx)
@@ -20,6 +20,19 @@ template< int TS> __global__ void gputiled(
     int bx = ocx+tx;
     int by = ty;
 
-    // break
+    float csum = 0.0;
+    for(int t = 0;t< gridDim.x; t++){
+
+        Atile[ty][tx] = A[ay*Ax+ax];
+        Btile[ty][tx] = B[by*Bx+bx];
+        __syncthreads();
+        for( int k =0; k<TS; k++){
+            csum += Atile[ty][k]*Btile[k][tx];
+        }
+        __syncthreads();
+        ax +=TS;
+        by +=TS;
+    }
+    C[ay*Bx+bx] = csum;
 
 }
